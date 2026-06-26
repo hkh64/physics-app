@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>اپلیکیشن آموزشی دکتر خسروی</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0B1B3D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0B1B3D;       /* Navy Blue */
+            --primary-light: #162C5B; /* Lighter Navy */
+            --accent: #D4AF37;        /* Gold */
+            --accent-orange: #E67E22;  /* Warm Orange */
+            --background: #F4F6F9;    /* Light Gray/Blue */
+            --surface: #FFFFFF;       /* Card White */
+            --text-dark: #2C3E50;     /* Charcoal Text */
+            --text-light: #7F8C8D;    /* Gray Secondary Text */
+            --border-color: #E2E8F0;  /* Subtle divider */
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.6;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            direction: rtl;
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: calc(14px + var(--safe-top)) 16px 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            fill: var(--accent);
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        header .subtitle {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 400;
+        }
+
+        /* Main Scrollable Area */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            padding-bottom: calc(75px + var(--safe-bottom)); /* Leave space for bottom nav */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom Navigation Bar */
+        nav {
+            background-color: var(--surface);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(64px + var(--safe-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            width: 20%;
+            height: 100%;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .nav-item.active i {
+            color: var(--accent-orange);
+            transform: scale(1.1);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent-orange);
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Standardized Components */
+        .card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-right: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-gold {
+            border-right: 4px solid var(--accent);
+        }
+
+        .card-orange {
+            border-right: 4px solid var(--accent-orange);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent-orange);
+        }
+
+        /* --- 1. INTRO TAB STYLING --- */
+        .profile-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 24px 16px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(11, 27, 61, 0.15);
+            position: relative;
+        }
+
+        .profile-avatar-container {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background-color: var(--surface);
+            padding: 4px;
+            border: 3px solid var(--accent);
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-hero h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .profile-hero .title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            background-color: rgba(255,255,255,0.1);
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .bio-text {
+            color: var(--text-dark);
+            text-align: justify;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--surface);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .contact-item:active {
+            background-color: rgba(11, 27, 61, 0.05);
+            transform: scale(0.98);
+        }
+
+        .contact-item i {
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        .contact-item.telegram i { color: #0088cc; }
+        .contact-item.instagram i { color: #e1306c; }
+        .contact-item.email i { color: #d93025; }
+
+        /* --- 2. EDUCATION TAB STYLING --- */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .category-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--surface);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .edu-section {
+            display: none;
+        }
+
+        .edu-section.active {
+            display: block;
+        }
+
+        .edu-card {
+            background: var(--surface);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .edu-card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edu-card-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .edu-card-header .badge {
+            background-color: var(--accent);
+            color: var(--primary);
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .edu-card-body {
+            padding: 14px;
+        }
+
+        .edu-card-body p {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+
+        .edu-card-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+        }
+
+        /* --- 3. QUESTIONS TAB STYLING --- */
+        .q-card {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .q-header {
+            padding: 12px 16px;
+            background-color: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .q-tag {
+            background-color: rgba(11, 27, 61, 0.08);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .q-num {
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-size: 0.85rem;
+        }
+
+        .q-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #EDF2F7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .q-image-placeholder svg {
+            width: 60px;
+            height: 60px;
+            fill: #CBD5E0;
+            margin-bottom: 8px;
+        }
+
+        .q-body {
+            padding: 16px;
+        }
+
+        .q-text {
+            font-weight: 600;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .q-choices {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .q-choice {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .q-choice:active {
+            background-color: #E2E8F0;
+        }
+
+        .show-answer-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 14px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .q-answer-box {
+            display: none;
+            background-color: #FFFDF5;
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* --- 4. ONLINE TAB STYLING --- */
+        .online-status {
+            text-align: center;
+            padding: 30px 16px;
+            color: var(--text-light);
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(11, 27, 61, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--accent-orange);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .news-item {
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border-right: 4px solid var(--accent-orange);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .news-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .news-date {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            background-color: var(--background);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .news-content {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        .online-error-card {
+            background-color: #FFF5F5;
+            border: 1px solid #FED7D7;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .online-error-card i {
+            font-size: 2.5rem;
+            color: #E53E3E;
+            margin-bottom: 8px;
+        }
+
+        .online-error-card p {
+            color: #9B2C2C;
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        .retry-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .download-btn {
+            background-color: var(--primary);
+            color: white !important;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(11, 27, 61, 0.15);
+        }
+
+        .download-btn:active {
+            background-color: var(--primary-light);
+            transform: scale(0.98);
+        }
+
+        /* Option buttons styling */
+        .option-btn {
+            background-color: #F8FAFC;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.25s;
+            cursor: pointer;
+            text-align: right;
+            width: 100%;
+            font-family: inherit;
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            background-color: #EDF2F7;
+            border-color: #CBD5E0;
+        }
+
+        .option-btn:active:not(.disabled) {
+            transform: scale(0.99);
+        }
+
+        .option-btn.correct {
+            background-color: #C6F6D5 !important;
+            border-color: #48BB78 !important;
+            color: #22543D !important;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: #FED7D7 !important;
+            border-color: #F56565 !important;
+            color: #742A2A !important;
+            font-weight: 600;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* --- 5. WEBSITE TAB STYLING --- */
+        .iframe-container {
+            width: 100%;
+            height: calc(100vh - 130px - var(--safe-top) - var(--safe-bottom));
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--surface);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Header -->
+    <header>
+        <div class="header-title-container">
+            <svg class="header-logo" viewBox="0 0 24 24">
+                <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+                <path d="M12 17c-3.31 0-6-2.69-6-6h1.9c.45 2.24 2.42 4 4.1 4s3.65-1.76 4.1-4H18c-.45 3.31-3.14 6-6 6z" opacity="0.3"/>
+            </svg>
+            <div>
+                <h1>اپلیکیشن آموزشی دکتر خسروی</h1>
+                <div class="subtitle">فیزیک و هوش تحلیلی کنکور و تیزهوشان</div>
+            </div>
+        </div>
+        <i class="material-icons-round" style="color: var(--accent); font-size: 1.8rem;">school</i>
+    </header>
+
+    <!-- Main Content Panel -->
+    <main id="main-content">
+
+        <!-- 1. معرفی TAB -->
+        <div id="intro" class="tab-content active">
+            <div class="profile-hero">
+                <div class="profile-avatar-container">
+                    <svg class="profile-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="#F8F9FA"/>
+                        <!-- Head and hair -->
+                        <path d="M50 25c-8.5 0-14 6-14 13.5 0 2.5.5 4.5 1.5 6 1.5-3 5-5.5 8.5-5.5s7.5 3 7.5 7.5c0 4.5-3.5 7.5-7.5 7.5-2.2 0-4.2-1-5.5-2.5C42.5 53 46 54.5 50 54.5c10 0 15.5-7.5 15.5-16C65.5 30 60 25 50 25z" fill="#0B1B3D"/>
+                        <!-- Eyeglasses -->
+                        <path d="M41 40h6v2h-6zm12 0h6v2h-6z" stroke="#0B1B3D" stroke-width="1.5" fill="none"/>
+                        <line x1="47" y1="41" x2="53" y2="41" stroke="#0B1B3D" stroke-width="1.5"/>
+                        <!-- Face -->
+                        <path d="M50 54.5c-6.3 0-11.5-4.5-11.5-10.5h23c0 6-5.2 10.5-11.5 10.5z" fill="#FFE0BD"/>
+                        <path d="M47 47c1 1 2.5 1.5 3 1.5s2-.5 3-1.5" stroke="#E67E22" stroke-width="1.5" fill="none"/>
+                        <!-- Suit / Collar -->
+                        <path d="M50 55 L32 75 L32 90 L68 90 L68 75 Z" fill="#0B1B3D"/>
+                        <path d="M50 55 L42 66 L50 78 L58 66 Z" fill="#FFFFFF"/>
+                        <!-- Tie -->
+                        <path d="M48 66 L52 66 L53 82 L50 86 L47 82 Z" fill="#D4AF37"/>
+                    </svg>
+                </div>
+                <h2>دکتر حامد خسروی</h2>
+                <div class="title">استاد فیزیک کنکور و هوش تحلیلی</div>
+                <div style="font-size: 0.8rem; color: #D4AF37; font-weight: 600;">مدرس تخصصی مدارس سمپاد و تیزهوشان</div>
+            </div>
+
+            <div class="card card-gold">
+                <div class="section-title">
+                    <i class="material-icons-round">history_edu</i>
+                    <span>درباره استاد</span>
+                </div>
+                <p class="bio-text">
+                    دکتر حامد خسروی با بیش از یک دهه تجربه درخشان در تدریس فیزیک کنکور، دوره‌های المپیاد و هوش و استعداد تحلیلی در برترین مراکز آموزشی و مدارس سمپاد کشور، به دانش‌آموزان کمک می‌کند تا سخت‌ترین مباحث علمی را به ساده‌ترین شکل ممکن فرابگیرند. تفکر الگوریتمی و عمق تحلیل سوالات در کلاس‌های ایشان، یکی از دلایل قبولی صدها رتبه برتر کنکور و پذیرفته‌شدگان آزمون‌های تیزهوشان است.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="section-title">
+                    <i class="material-icons-round">connect_without_contact</i>
+                    <span>راه‌های ارتباط با ما</span>
+                </div>
+                <p class="bio-text" style="margin-bottom: 8px;">جهت هماهنگی کلاس‌های خصوصی، گروهی و دریافت راهنمایی‌های تحصیلی از طریق راه‌های زیر با ما در ارتباط باشید:</p>
+                
+                <div class="contact-grid">
+                    <a href="https://t.me/dr_khosravi_physics" target="_blank" class="contact-item telegram">
+                        <i class="material-icons-round">send</i>
+                        <span>کانال تلگرام آموزشی (dr_khosravi_physics@)</span>
+                    </a>
+                    <a href="https://instagram.com/dr_khosravi_physics" target="_blank" class="contact-item instagram">
+                        <i class="material-icons-round">photo_camera</i>
+                        <span>صفحه اینستاگرام (dr_khosravi_physics@)</span>
+                    </a>
+                    <a href="mailto:info@drkhosravi-physics.com" class="contact-item email">
+                        <i class="material-icons-round">mail</i>
+                        <span>ایمیل پشتیبانی (info@drkhosravi-physics.com)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. آموزش TAB -->
+        <div id="education" class="tab-content">
+            <div class="category-tabs">
+                <button class="category-btn active" onclick="switchCategory('physics', this)">فیزیک کنکور</button>
+                <button class="category-btn" onclick="switchCategory('aptitude', this)">هوش و استعداد تحلیلی</button>
+            </div>
+
+            <!-- Physics Sub-section -->
+            <div id="physics-sec" class="edu-section active">
+                <div class="edu-card">
+                    <div class="edu-card-header">
+                        <h3>فیزیک دوازدهم - حرکت‌شناسی</h3>
+                        <span class="badge">رایگان</span>
+                    </div>
+                    <div class="edu-card-body">
+                        <p>نمودار مکان-زمان (x-t) یکی از مهم‌ترین مباحث فصل حرکت‌شناسی است. شیب خط مماس بر این نمودار در هر لحظه نشان‌دهنده سرعت لحظه‌ای متحرک است. تقعر نمودار به ما نشان‌دهنده علامت شتاب (a) است؛ اگر تقعر رو به بالا باشد شتاب مثبت و اگر رو به پایین باشد شتاب منفی است.</p>
+                        <div class="edu-card-meta">
+                            <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                            <span>مدت مطالعه: ۵ دقیقه</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div class="edu-card-header">
+                        <h3>فیزیک یازدهم - الکتریسیته ساکن</h3>
+                        <span class="badge">ویژه</span>
+                    </div>
+                    <div class="edu-card-body">
+                        <p>بر اساس قانون کولن، نیروی الکترواستاتیکی بین دو بار الکتریکی نقطه‌ای با حاصل‌ضرب اندازه بارها نسبت مستقیم و با مجذور فاصله آن‌ها از یکدیگر نسبت عکس دارد. همواره به یاد داشته باشید که جهت نیرو در راستای خط واصل دو بار بوده و جاذبه یا دافعه بودن آن به علامت بارها بستگی دارد.</p>
+                        <div class="edu-card-meta">
+                            <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                            <span>مدت مطالعه: ۷ دقیقه</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div class="edu-card-header">
+                        <h3>فیزیک دهم - فشار در مایعات</h3>
+                        <span class="badge">رایگان</span>
+                    </div>
+                    <div class="edu-card-body">
+                        <p>فشار در مایعات به فرمول P = ρgh محاسبه می‌شود. این فرمول نشان می‌دهد فشار مایع مستقل از مساحت سطح ظرف بوده و فقط به چگالی مایع (ρ)، شتاب گرانش (g) و عمق از سطح مایع (h) بستگی دارد. فشار در نقاط هم‌تراز از یک مایع ساکن یکسان است.</p>
+                        <div class="edu-card-meta">
+                            <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                            <span>مدت مطالعه: ۴ دقیقه</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aptitude Sub-section -->
+            <div id="aptitude-sec" class="edu-section">
+                <div class="edu-card">
+                    <div class="edu-card-header">
+                        <h3>الگوهای تصویری و فضایی</h3>
+                        <span class="badge">آموزش عمومی</span>
+                    </div>
+                    <div class="edu-card-body">
+                        <p>در الگوهای تصویری تیزهوشان، همواره به دوران شکل‌ها (۹۰ درجه ساعتگرد یا پادساعتگرد)، قرینه‌سازی‌های محوری و مرکزی، و تغییرات رنگ خانه دوتایی توجه کنید. شمارش تعداد اضلاع یا بخش‌های تیره و روشن معمولاً فرمول پنهان این الگوهاست.</p>
+                        <div class="edu-card-meta">
+                            <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                            <span>مدت مطالعه: ۶ دقیقه</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div class="edu-card-header">
+                        <h3>استعداد کلامی و تحلیل منطقی</h3>
+                        <span class="badge">پیشرفته</span>
+                    </div>
+                    <div class="edu-card-body">
+                        <p>بخش عظیمی از سوالات استعداد تحلیلی به درک تناسب کلمات و برقراری ارتباط معنایی بین واژه‌ها اختصاص دارد. تمرین روی روابط ترتیبی، شمول معنایی، و نقیض قضایا نقشی اساسی در افزایش سرعت پاسخ‌گویی به این سوالات ایفا می‌کند.</p>
+                        <div class="edu-card-meta">
+                            <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                            <span>مدت مطالعه: ۵ دقیقه</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. نمونه سوالات TAB -->
+        <div id="questions" class="tab-content">
+            <h2 class="section-title" style="margin-bottom: 16px;">
+                <i class="material-icons-round">assignment_turned_in</i>
+                <span>نمونه سوالات برگزیده کنکور و تیزهوشان</span>
+            </h2>
+
+            <!-- Question 1 -->
+            <div class="q-card">
+                <div class="q-header">
+                    <span class="q-tag">فیزیک دوازدهم - حرکت شناسی</span>
+                    <span class="q-num">سوال ۱</span>
+                </div>
+                <div class="q-image-placeholder">
+                    <!-- Technical diagram of velocity graph (SVG) -->
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="20" y1="80" x2="180" y2="80" stroke="#2C3E50" stroke-width="2" marker-end="url(#arrow)"/>
+                        <line x1="30" y1="90" x2="30" y2="15" stroke="#2C3E50" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M30 80 L70 30 L120 30 L160 80" fill="none" stroke="#E67E22" stroke-width="3"/>
+                        <text x="175" y="90" font-size="8" font-family="sans-serif">t(s)</text>
+                        <text x="15" y="20" font-size="8" font-family="sans-serif">v(m/s)</text>
+                        <line x1="70" y1="30" x2="70" y2="80" stroke="#CBD5E0" stroke-dasharray="2,2"/>
+                        <line x1="120" y1="30" x2="120" y2="80" stroke="#CBD5E0" stroke-dasharray="2,2"/>
+                        <text x="67" y="90" font-size="7">۴</text>
+                        <text x="117" y="90" font-size="7">۱۰</text>
+                        <text x="157" y="90" font-size="7">۱۴</text>
+                        <text x="20" y="32" font-size="7">۲۰</text>
+                        <line x1="30" y1="30" x2="70" y2="30" stroke="#CBD5E0" stroke-dasharray="2,2"/>
+                    </svg>
+                    <span>نمودار سرعت-زمان متحرک</span>
+                </div>
+                <div class="q-body">
+                    <div class="q-text">نمودار سرعت-زمان متحرکی که روی خط راست حرکت می‌کند مطابق شکل بالا است. جابجایی متحرک در کل بازه حرکت (۱۴ ثانیه اول) چند متر است؟</div>
+                    <div class="q-choices">
+                        <div class="q-choice"><span>الف) ۲۰۰ متر</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>ب) ۲۲۰ متر</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>ج) ۱۸۰ متر</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>د) ۲۴۰ متر</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                    </div>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans1')">
+                        <i class="material-icons-round">lightbulb</i>
+                        <span>مشاهده پاسخ تشریحی</span>
+                    </button>
+                    <div id="ans1" class="q-answer-box">
+                        <strong>پاسخ تشریحی (گزینه الف):</strong><br>
+                        در نمودار سرعت-زمان (v-t)، مساحت سطح محصور بین نمودار و محور زمان مساوی جابجایی (Δx) است. شکل حاصل یک ذوزنقه است.<br>
+                        قاعده بزرگ = ۱۴، قاعده کوچک = ۶، ارتفاع = ۲۰<br>
+                        فرمول مساحت ذوزنقه: S = (قاعده بزرگ + قاعده کوچک) × ارتفاع ÷ ۲<br>
+                        S = (14 + 6) × 20 / 2 = 20 × 10 = 200 متر.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="q-card">
+                <div class="q-header">
+                    <span class="q-tag">استعداد تحلیلی - هوش تصویری</span>
+                    <span class="q-num">سوال ۲</span>
+                </div>
+                <div class="q-image-placeholder">
+                    <!-- Technical diagram of abstract shapes -->
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="25" width="40" height="40" fill="none" stroke="#2C3E50" stroke-width="2"/>
+                        <circle cx="40" cy="45" r="12" fill="#D4AF37"/>
+                        
+                        <rect x="80" y="25" width="40" height="40" fill="none" stroke="#2C3E50" stroke-width="2"/>
+                        <circle cx="100" cy="45" r="12" fill="#D4AF37" opacity="0.5"/>
+                        <rect x="94" y="39" width="12" height="12" fill="#0B1B3D"/>
+
+                        <rect x="140" y="25" width="40" height="40" fill="none" stroke="#2C3E50" stroke-width="2"/>
+                        <rect x="154" y="39" width="12" height="12" fill="#0B1B3D"/>
+                    </svg>
+                    <span>توالی منطقی اشکال هندسی</span>
+                </div>
+                <div class="q-body">
+                    <div class="q-text">با توجه به الگوی منطقی تصاویر بالا، در شکل سوم چه تغییری حاصل شده است تا به توالی بعدی برسیم؟ (هوش فضایی و ادغام شکل‌ها)</div>
+                    <div class="q-choices">
+                        <div class="q-choice"><span>الف) دایره کلاً حذف شده و مربع تیره جایگزین آن شده است.</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>ب) شکل‌ها به اندازه ۹۰ درجه در جهت عقربه‌های ساعت چرخیده‌اند.</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>ج) قرینه‌سازی افقی صورت گرفته است.</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                        <div class="q-choice"><span>د) هیچ کدام از موارد فوق.</span><i class="material-icons-round" style="font-size: 1rem; color: #CBD5E0;">radio_button_unchecked</i></div>
+                    </div>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans2')">
+                        <i class="material-icons-round">lightbulb</i>
+                        <span>مشاهده پاسخ تشریحی</span>
+                    </button>
+                    <div id="ans2" class="q-answer-box">
+                        <strong>پاسخ تشریحی (گزینه الف):</strong><br>
+                        در این تست، ما شاهد فرآیند تفریق هندسی یا تفاضل لایه‌ها هستیم. لایه پیش‌زمینه تیره بر روی لایه طلایی قرار می‌گیرد و آن را حذف می‌کند، بنابراین در شکل نهایی مربع تیره مرکزی باقی مانده و لایه‌ی زیرین آن کامل محو می‌گردد.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. آنلاین TAB -->
+        <div id="online" class="tab-content">
+            <h2 class="section-title" style="margin-bottom: 16px;">
+                <i class="material-icons-round">campaign</i>
+                <span>آخرین اخبار و اطلاعیه‌های پویا</span>
+            </h2>
+
+            <!-- Loading State -->
+            <div id="online-loading" class="online-status">
+                <div class="loading-spinner"></div>
+                <p>در حال دریافت اطلاعات از سرور...</p>
+            </div>
+
+            <!-- Dynamic Content Destination -->
+            <div id="online-data-container" style="display: none;">
+                <!-- Last Update and News -->
+                <div class="card card-orange" id="news-section-card">
+                    <div class="section-title">
+                        <i class="material-icons-round">campaign</i>
+                        <span>آخرین اخبار و اطلاعیه‌ها</span>
+                    </div>
+                    <p class="news-content" id="news-text-content" style="font-size: 0.9rem; font-weight: 500;"></p>
+                    <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 10px; display: flex; align-items: center; gap: 4px;">
+                        <i class="material-icons-round" style="font-size: 0.9rem;">schedule</i>
+                        <span>آخرین بروزرسانی: </span>
+                        <span id="news-last-update"></span>
+                    </div>
+                </div>
+
+                <!-- PDF Download Section -->
+                <div class="card" id="pdf-section-card" style="display: none;">
+                    <div class="section-title">
+                        <i class="material-icons-round">picture_as_pdf</i>
+                        <span>دانلود فایل آموزشی (PDF)</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 12px;">فایل آموزشی جدید جهت دانلود بارگذاری شده است. با کلیک بر روی دکمه زیر می‌توانید آن را دریافت کنید:</p>
+                    <a id="pdf-download-btn" href="#" target="_blank" class="download-btn" style="text-decoration: none;">
+                        <i class="material-icons-round">file_download</i>
+                        <span id="pdf-btn-title">دانلود PDF</span>
+                    </a>
+                </div>
+
+                <!-- Interactive Test Section -->
+                <div class="card" id="test-section-card" style="display: none;">
+                    <div class="section-title">
+                        <i class="material-icons-round">quiz</i>
+                        <span>آزمون روزانه آنلاین</span>
+                    </div>
+                    <div class="q-body" style="padding: 0;">
+                        <div class="q-text" id="test-question-text" style="font-size: 0.9rem; margin-bottom: 16px;"></div>
+                        <div class="q-choices" id="test-options-container">
+                            <!-- Clickable buttons for options will be rendered here -->
+                        </div>
+                        <div id="test-result-box" class="q-answer-box" style="margin-top: 16px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offline / Error State -->
+            <div id="online-error" class="online-status" style="display: none;">
+                <div class="online-error-card">
+                    <i class="material-icons-round">wifi_off</i>
+                    <p>دریافت اطلاعات آنلاین با خطا مواجه شد. لطفاً اتصال اینترنت خود را بررسی نمایید.</p>
+                    <button class="retry-btn" onclick="fetchOnlineUpdates()">
+                        <i class="material-icons-round">sync</i>
+                        <span>تلاش مجدد</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. سایت TAB -->
+        <div id="website" class="tab-content">
+            <h2 class="section-title" style="margin-bottom: 12px;">
+                <i class="material-icons-round">public</i>
+                <span>سایت رسمی دکتر خسروی</span>
+            </h2>
+            <div class="iframe-container">
+                <iframe id="website-iframe" src="about:blank" title="وب‌سایت دکتر خسروی"></iframe>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav>
+        <div class="nav-item active" data-tab="intro">
+            <i class="material-icons-round">person</i>
+            <span>معرفی</span>
+        </div>
+        <div class="nav-item" data-tab="education">
+            <i class="material-icons-round">school</i>
+            <span>آموزش فیزیک</span>
+        </div>
+        <div class="nav-item" data-tab="questions">
+            <i class="material-icons-round">assignment</i>
+            <span>نمونه سوالات</span>
+        </div>
+        <div class="nav-item" data-tab="online">
+            <i class="material-icons-round">rss_feed</i>
+            <span>آنلاین</span>
+        </div>
+        <div class="nav-item" data-tab="website">
+            <i class="material-icons-round">public</i>
+            <span>وب‌سایت</span>
+        </div>
+    </nav>
+
+    <!-- SPA Logic & Service Worker Registration -->
+    <script>
+        // Tab switching SPA engine
+        function navigateTab(tabId, element) {
+            // Update active state in bottom bar
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (element) {
+                element.classList.add('active');
+            } else {
+                const targetItem = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+                if (targetItem) {
+                    targetItem.classList.add('active');
+                }
+            }
+
+            // Show current tab container, hide others
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            // Specific tab click handlers
+            if (tabId === 'online') {
+                fetchOnlineUpdates();
+            } else if (tabId === 'website') {
+                loadWebsiteIframe();
+            }
+
+            // Scroll main content to top smoothly
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+        }
+
+        // Setup bottom navigation event listeners
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                navigateTab(tabId, this);
+            });
+        });
+
+        // Sub-category selector in the Education tab
+        function switchCategory(catId, btnElement) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+
+            document.querySelectorAll('.edu-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            if (catId === 'physics') {
+                document.getElementById('physics-sec').classList.add('active');
+            } else {
+                document.getElementById('aptitude-sec').classList.add('active');
+            }
+        }
+
+        // Accordion answer visual toggler
+        function toggleAnswer(answerId) {
+            const answerBox = document.getElementById(answerId);
+            if (answerBox.style.display === 'block') {
+                answerBox.style.display = 'none';
+            } else {
+                answerBox.style.display = 'block';
+            }
+        }
+
+        // Website Iframe loader
+        function loadWebsiteIframe() {
+            const iframe = document.getElementById('website-iframe');
+            // Check if iframe is blank, load official website URL (placeholder loaded locally)
+            if (iframe.src === 'about:blank' || iframe.src === '') {
+                iframe.src = 'https://drkhosravi-physics.com'; // Actual or placeholder website
+            }
+        }
+
+        // Online news fetching logic
+        const GITHUB_JSON_URL = 'https://raw.githubusercontent.com/kia3karen/physics-app-data/main/data.json'; // Configurable user URL
+
+        function fetchOnlineUpdates() {
+            const loadingDiv = document.getElementById('online-loading');
+            const dataDiv = document.getElementById('online-data-container');
+            const errorDiv = document.getElementById('online-error');
+
+            loadingDiv.style.display = 'block';
+            dataDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+
+            fetch(GITHUB_JSON_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('شبکه پاسخ نامناسب داد');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderOnlineData(data);
+                    
+                    loadingDiv.style.display = 'none';
+                    dataDiv.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error fetching online updates:', error);
+                    // Use a mock fallback mechanism to ensure the "online" tab always renders something meaningful if offline/config is not ready yet
+                    renderMockOnlineData();
+                    loadingDiv.style.display = 'none';
+                    dataDiv.style.display = 'block';
+                });
+        }
+
+        function renderOnlineData(data) {
+            // Last update and news
+            document.getElementById('news-text-content').textContent = data.news || 'هیچ اطلاعیه‌ای یافت نشد.';
+            document.getElementById('news-last-update').textContent = data.last_update || 'نامشخص';
+
+            // PDF download section
+            const pdfCard = document.getElementById('pdf-section-card');
+            if (data.pdf_section && data.pdf_section.show) {
+                document.getElementById('pdf-btn-title').textContent = data.pdf_section.title || 'دانلود فایل PDF';
+                document.getElementById('pdf-download-btn').href = data.pdf_section.link || '#';
+                pdfCard.style.display = 'block';
+            } else {
+                pdfCard.style.display = 'none';
+            }
+
+            // Daily Test Section
+            const testCard = document.getElementById('test-section-card');
+            if (data.daily_test && data.daily_test.show) {
+                renderDailyInteractiveTest(data.daily_test);
+                testCard.style.display = 'block';
+            } else {
+                testCard.style.display = 'none';
+            }
+        }
+
+        function renderDailyInteractiveTest(testData) {
+            const questionText = document.getElementById('test-question-text');
+            const optionsContainer = document.getElementById('test-options-container');
+            const resultBox = document.getElementById('test-result-box');
+
+            questionText.textContent = testData.question;
+            optionsContainer.innerHTML = '';
+            resultBox.style.display = 'none';
+            resultBox.innerHTML = '';
+
+            const options = testData.options || [];
+            const correctIndex = testData.correct_answer_index;
+
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <i class="material-icons-round" style="font-size: 1.1rem; color: #CBD5E0;">radio_button_unchecked</i>
+                `;
+                
+                btn.addEventListener('click', () => {
+                    // Disable all option buttons
+                    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+                    allButtons.forEach(b => b.classList.add('disabled'));
+
+                    if (idx === correctIndex) {
+                        btn.classList.add('correct');
+                        btn.querySelector('i').textContent = 'check_circle';
+                        btn.querySelector('i').style.color = '#48BB78';
+                        
+                        resultBox.className = 'q-answer-box';
+                        resultBox.style.backgroundColor = '#E6FFFA';
+                        resultBox.style.borderColor = '#319795';
+                        resultBox.style.color = '#234E52';
+                        resultBox.innerHTML = `
+                            <strong>آفرین! پاسخ شما صحیح است. ✨</strong><br>
+                            پاسخ صحیح گزینه ${idx + 1} یعنی «${opt}» می‌باشد.
+                        `;
+                        resultBox.style.display = 'block';
+                    } else {
+                        btn.classList.add('incorrect');
+                        btn.querySelector('i').textContent = 'cancel';
+                        btn.querySelector('i').style.color = '#F56565';
+
+                        // Highlight correct one
+                        if (allButtons[correctIndex]) {
+                            allButtons[correctIndex].classList.add('correct');
+                            allButtons[correctIndex].querySelector('i').textContent = 'check_circle';
+                            allButtons[correctIndex].querySelector('i').style.color = '#48BB78';
+                        }
+
+                        resultBox.className = 'q-answer-box';
+                        resultBox.style.backgroundColor = '#FFF5F5';
+                        resultBox.style.borderColor = '#FEB2B2';
+                        resultBox.style.color = '#742A2A';
+                        resultBox.innerHTML = `
+                            <strong>پاسخ شما نادرست است. ❌</strong><br>
+                            گزینه انتخابی شما نادرست بود. پاسخ صحیح گزینه ${correctIndex + 1} یعنی «${options[correctIndex]}» می‌باشد.
+                        `;
+                        resultBox.style.display = 'block';
+                    }
+                });
+
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // Fallback mock online data
+        function renderMockOnlineData() {
+            const fallbackData = {
+                "last_update": "۱۴۰۶/۰۴/۰۶",
+                "news": "به اپلیکیشن فیزیک و هوش تحلیلی دکتر خسروی خوش آمدید. همایش بزرگ جمع‌بندی فیزیک کنکور و تیزهوشان به زودی برگزار خواهد شد. اطلاعات تکمیلی در کانال تلگرام قرار خواهد گرفت.",
+                "pdf_section": {
+                    "show": true,
+                    "title": "فرمول‌نامه خلاصه فیزیک دوازدهم - حرکت‌شناسی و دینامیک",
+                    "link": "https://t.me/dr_khosravi_physics"
+                },
+                "daily_test": {
+                    "show": true,
+                    "question": "نمودار مکان-زمان متحرکی که روی خط راست حرکت می‌کند یک سهمی است که راس آن در t = 2s قرار دارد. اگر شتاب حرکت متحرک ۴m/s² باشد، سرعت متحرک در لحظه شروع چند متر بر ثانیه بوده است؟",
+                    "options": [
+                        "الف) ۸- متر بر ثانیه",
+                        "ب) ۴- متر بر ثانیه",
+                        "ج) ۸ متر بر ثانیه",
+                        "د) صفر"
+                    ],
+                    "correct_answer_index": 0
+                }
+            };
+            renderOnlineData(fallbackData);
+        }
+
+        // Auto routing to correct hash on initial load
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const targetLink = document.querySelector(`nav .nav-item[data-tab="${hash}"]`);
+                if (targetLink) {
+                    navigateTab(hash, targetLink);
+                }
+            }
+        });
+
+        // Register Progressive Web App Service Worker (Skip if on file:// protocol in Android WebView)
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+            try {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(reg => console.log('سرویس ورکر با موفقیت ثبت شد:', reg.scope))
+                        .catch(err => console.log('خطا در ثبت سرویس ورکر:', err));
+                });
+            } catch (e) {
+                console.warn('سرویس ورکر پشتیبانی نمی‌شود:', e);
+            }
+        }
+    </script>
+</body>
+</html>

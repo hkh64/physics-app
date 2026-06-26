@@ -1,0 +1,6 @@
+{
+  "name": "اپلیکیشن دکتر خسروی",
+  "description": "اپلیکیشن تخصصی آموزش فیزیک و هوش تحلیلی دکتر حامد خسروی",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
