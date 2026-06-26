@@ -1135,7 +1135,7 @@
         // Online news fetching logic
         const GITHUB_JSON_URL = 'https://raw.githubusercontent.com/kia3karen/physics-app-data/main/data.json'; // Configurable user URL
 
-        function fetchOnlineUpdates() {
+       function fetchOnlineUpdates() {
             const loadingDiv = document.getElementById('online-loading');
             const dataDiv = document.getElementById('online-data-container');
             const errorDiv = document.getElementById('online-error');
@@ -1144,19 +1144,24 @@
             dataDiv.style.display = 'none';
             errorDiv.style.display = 'none';
 
-            fetch(https://raw.githubusercontent.com/hkh64/physics-app/refs/heads/main/data.json)
+            // آدرس اصلاح شده با کوتیشن
+            fetch('https://raw.githubusercontent.com/hkh64/physics-app/main/data.json')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('شبکه پاسخ نامناسب داد');
-                    }
+                    if (!response.ok) throw new Error('Network error');
                     return response.json();
                 })
                 .then(data => {
                     renderOnlineData(data);
-                    
                     loadingDiv.style.display = 'none';
                     dataDiv.style.display = 'block';
                 })
+                .catch(error => {
+                    console.error('Error:', error);
+                    renderMockOnlineData();
+                    loadingDiv.style.display = 'none';
+                    dataDiv.style.display = 'block';
+                });
+        }
                 .catch(error => {
                     console.error('Error fetching online updates:', error);
                     // Use a mock fallback mechanism to ensure the "online" tab always renders something meaningful if offline/config is not ready yet
